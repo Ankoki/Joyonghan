@@ -3,7 +3,6 @@ package com.ankoki.joyonghan.misc;
 import com.ankoki.sakura.JSON;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

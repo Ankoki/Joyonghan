@@ -113,6 +113,12 @@ public class AppData {
 				System.out.println("The key '" + entry.getKey() + "' was not found, and set to the default value '" + entry.getValue() + "'.");
 			}
 		}
+		synchronized (this.data) {
+			for (Entry<String, Object> entry : this.data.entrySet()) {
+				if (!shallow.containsKey(entry.getKey()))
+					System.out.println("The key '" + entry.getKey() + "' with a value of '" + entry.getValue() + "' is unused. This can most likely be safely removed.");
+			}
+		}
 		Misc.saveJsonTo(this.data, this.root);
 	}
 

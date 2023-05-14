@@ -15,7 +15,7 @@ public class MainFrame extends JFrame {
 		System.setProperty("Xdock:name", "JOYONGHAN");
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.getContentPane().setBackground(Color.decode("#7F9183"));
+		this.getContentPane().setBackground(new Color(127, 145, 131));
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/dock.png")));
 		if (Misc.getOperatingSystem() == OperatingSystem.MAC) {
 			try {
@@ -33,9 +33,12 @@ public class MainFrame extends JFrame {
 	 */
 	public void showScreen(Screen screen) {
 		this.getContentPane().removeAll();
+		this.repaint();
 		for (JComponent component : screen)
 			this.getContentPane().add(component);
+		this.revalidate();
 		this.setVisible(true);
+		System.out.println("The screen '" + screen.getClass().getSimpleName() + "' has been shown.");
 	}
 
 }

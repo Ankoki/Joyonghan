@@ -5,6 +5,7 @@ import com.ankoki.joyonghan.database.Database;
 import com.ankoki.joyonghan.frontend.MainFrame;
 import com.ankoki.joyonghan.frontend.screens.auth.MainScreen;
 import com.ankoki.joyonghan.misc.Misc;
+import com.ankoki.joyonghan.misc.Misc.OperatingSystem;
 import com.ankoki.sakura.JSON.MalformedJsonException;
 
 import javax.imageio.ImageIO;
@@ -17,8 +18,14 @@ public class Joyonghan {
 
 	private static Joyonghan current;
 
+	public static Joyonghan getInstance() {
+		return current;
+	}
+
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
+		if (Misc.getOperatingSystem() == OperatingSystem.MAC)
+			System.setProperty( "apple.awt.application.appearance", "system" );
 		System.out.println("Joyonghan is enabling.");
 		try {
 			JDialog dialog = new JDialog((Frame) null);
@@ -43,7 +50,7 @@ public class Joyonghan {
 			Joyonghan.current.getFrontend().showScreen(new MainScreen(current.getFrontend()));
 			dialog.setVisible(false);
 			dialog.dispose();
-			System.out.printf("Joyonghan has been enabled in %sms.", System.currentTimeMillis() - start);
+			System.out.printf("Joyonghan has been enabled in %sms.\n", System.currentTimeMillis() - start);
 		} catch (IOException | IllegalAccessException | MalformedJsonException ex) {
 			ex.printStackTrace();
 		}

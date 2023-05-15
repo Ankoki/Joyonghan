@@ -1,7 +1,8 @@
 package com.ankoki.joyonghan.frontend;
 
+import com.ankoki.joyonghan.Joyonghan;
 import com.ankoki.joyonghan.misc.Misc;
-import com.ankoki.joyonghan.misc.Misc.OperatingSystem;
+import com.ankoki.joyonghan.misc.OperatingSystem;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -10,11 +11,16 @@ import java.io.IOException;
 
 public class MainFrame extends JFrame {
 
+	/**
+	 * Creates the main frame that Joyonghan relies on.
+	 */
 	public MainFrame() {
 		System.setProperty("apple.awt.application.appearance", "NSAppearanceNameDarkAqua");
 		System.setProperty("Xdock:name", "JOYONGHAN");
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> Joyonghan.getInstance().shutdown()));
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setResizable(false);
 		this.getContentPane().setBackground(new Color(127, 145, 131));
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/dock.png")));
 		if (Misc.getOperatingSystem() == OperatingSystem.MAC) {

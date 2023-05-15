@@ -1,7 +1,8 @@
 {
   "last-used": null,
-  "current-logged-in": {
+  "current-account": {
     "username": null,
+    "uuid": null,
     "email": null,
     "password-hash": null
   }

@@ -1,32 +1,42 @@
 package com.ankoki.joyonghan;
 
-import com.ankoki.joyonghan.accounts.PasswordHasher;
+import com.ankoki.joyonghan.auth.Account;
+import com.ankoki.joyonghan.auth.PasswordHasher;
 import com.ankoki.joyonghan.database.Database;
 import com.ankoki.joyonghan.frontend.MainFrame;
-import com.ankoki.joyonghan.frontend.screens.auth.MainScreen;
+import com.ankoki.joyonghan.frontend.screens.MainScreen;
+import com.ankoki.joyonghan.frontend.screens.home.HomeScreen;
 import com.ankoki.joyonghan.misc.Misc;
-import com.ankoki.joyonghan.misc.Misc.OperatingSystem;
+import com.ankoki.joyonghan.misc.OperatingSystem;
 import com.ankoki.sakura.JSON.MalformedJsonException;
+import com.ankoki.sakura.JSONSerializable;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 
 // 조용한 ~ TRANQUIL
 public class Joyonghan {
 
-	private static Joyonghan current;
+	private static Joyonghan instance;
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy | HH:mm");
 
 	public static Joyonghan getInstance() {
-		return current;
+		return instance;
 	}
 
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
-		if (Misc.getOperatingSystem() == OperatingSystem.MAC)
-			System.setProperty( "apple.awt.application.appearance", "system" );
 		System.out.println("Joyonghan is enabling.");
+		if (Misc.getOperatingSystem() == OperatingSystem.MAC)
+			System.setProperty( "apple.awt.application.appearance", "system");
+		JSONSerializable.register(Account.class);
 		try {
 			JDialog dialog = new JDialog((Frame) null);
 			dialog.setModal(false);
@@ -35,8 +45,8 @@ public class Joyonghan {
 			Image image = ImageIO.read(Joyonghan.class.getResourceAsStream("/icon.png"));
 			image = image.getScaledInstance(500, 500, Image.SCALE_DEFAULT);
 			JLabel splash = new JLabel(new ImageIcon(image));
-			splash.setBorder(BorderFactory.createEmptyBorder(200, 200, 200, 200));
-			splash.setSize(200, 200);
+			splash.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+			splash.setSize(100, 100);
 			dialog.add(splash, BorderLayout.CENTER);
 			dialog.setBackground(new Color(0, 0, 0, 0));
 			dialog.pack();
@@ -46,8 +56,22 @@ public class Joyonghan {
 			int y = (screenSize.height - dialog.getHeight()) / 2;
 			dialog.setLocation(x, y);
 			dialog.setVisible(true);
-			Joyonghan.current = new Joyonghan(new AppData(Misc.getOperatingSystem()), new MainFrame());
-			Joyonghan.current.getFrontend().showScreen(new MainScreen(current.getFrontend()));
+			Joyonghan.instance = new Joyonghan(new AppData(Misc.getOperatingSystem()), new MainFrame());
+			while (!Joyonghan.getInstance().data.isLoaded()) {}
+			Object obj = Joyonghan.instance.data.getData().get("current-account");
+			MainScreen screen = new MainScreen(instance.getFrontend());
+			if (obj != null) {
+				Map<String, Object> map = (Map<String, Object>) obj;
+				if (map.get("email") != null) {
+					Account account = Account.deserialize(map);
+					if (account != null && account.isValid())
+						Joyonghan.instance.getFrontend().showScreen(new HomeScreen(instance.getFrontend()));
+					else
+						Joyonghan.instance.getFrontend().showScreen(screen);
+				} else
+					Joyonghan.instance.getFrontend().showScreen(screen);
+			} else
+				Joyonghan.instance.getFrontend().showScreen(screen);
 			dialog.setVisible(false);
 			dialog.dispose();
 			System.out.printf("Joyonghan has been enabled in %sms.\n", System.currentTimeMillis() - start);
@@ -56,6 +80,7 @@ public class Joyonghan {
 		}
 	}
 
+	private Account account;
 	private final AppData data;
 	private final MainFrame frontend;
 	private final PasswordHasher hasher = new PasswordHasher();
@@ -70,6 +95,26 @@ public class Joyonghan {
 	public Joyonghan(AppData data, MainFrame frontend) {
 		this.data = data;
 		this.frontend = frontend;
+	}
+
+	/**
+	 * Gets the currently logged in account.
+	 *
+	 * @return the account that is logged in.
+	 */
+	public Account getAccount() {
+		return account;
+	}
+
+	/**
+	 * Sets the account that is currently logged in.
+	 * Also stores it in the app data.
+	 *
+	 * @param account the new account.
+	 */
+	public void setAccount(Account account) {
+		this.account = account;
+		this.data.getData().put("current-account", account);
 	}
 
 	/**
@@ -97,6 +142,32 @@ public class Joyonghan {
 	 */
 	public PasswordHasher getHasher() {
 		return hasher;
+	}
+
+	/**
+	 * Gets the database which is used in this instance.
+	 *
+	 * @return the database.
+	 */
+	public Database getDatabase() {
+		return database;
+	}
+
+	/**
+	 * Runs all shutdown procedures for Joyonghan.
+	 */
+	public void shutdown() {
+		long start = System.currentTimeMillis();
+		try {
+			System.out.println("Shutting down Joyonghan.");
+			this.getDatabase().disconnect();
+			this.getData().getData().put("last-used", Joyonghan.DATE_FORMAT.format(new Date()));
+			this.getData().saveAsync();
+			Joyonghan.instance = null;
+			System.out.println("Joyonghan shut down in " + (System.currentTimeMillis() - start) + "ms.");
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 }

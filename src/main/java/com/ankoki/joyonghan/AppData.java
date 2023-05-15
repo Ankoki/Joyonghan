@@ -1,7 +1,7 @@
 package com.ankoki.joyonghan;
 
 import com.ankoki.joyonghan.misc.Misc;
-import com.ankoki.joyonghan.misc.Misc.OperatingSystem;
+import com.ankoki.joyonghan.misc.OperatingSystem;
 import com.ankoki.sakura.JSON;
 import com.ankoki.sakura.JSON.MalformedJsonException;
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +10,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ public class AppData {
 
 	private final File root;
 	private final boolean success;
+	private boolean loaded;
 	private JSON data;
 
 	/**
@@ -47,13 +49,16 @@ public class AppData {
 		if (!root.exists()) {
 			root.mkdirs();
 			root.createNewFile();
-			this.copyDefaultData();
 			System.out.println("Default data file has been created.");
 		} else
 			System.out.println("Data was found at '" + this.root.getAbsolutePath() + "'.");
+		List<String> lines = Files.readAllLines(root.toPath());
+		if (lines.isEmpty())
+			this.copyDefaultData();
 		this.parseDataFromRoot().thenRun(() -> {
 			try {
 				this.matchKeys();
+				loaded = true;
 			} catch (IllegalAccessException | MalformedJsonException ex) {
 				ex.printStackTrace();
 			}
@@ -68,6 +73,15 @@ public class AppData {
 	 */
 	public boolean isEnabled() {
 		return success;
+	}
+
+	/**
+	 * Returns true if the JSON has been loaded successfully.
+	 *
+	 * @return true if loaded.
+	 */
+	public boolean isLoaded() {
+		return loaded;
 	}
 
 	/**
@@ -115,11 +129,22 @@ public class AppData {
 		}
 		synchronized (this.data) {
 			for (Entry<String, Object> entry : this.data.entrySet()) {
-				if (!shallow.containsKey(entry.getKey()))
-					System.out.println("The key '" + entry.getKey() + "' with a value of '" + entry.getValue() + "' is unused. This can most likely be safely removed.");
+				if (!shallow.containsKey(entry.getKey())) {
+					this.data.remove(entry.getKey());
+					System.out.println("The key '" + entry.getKey() + "' with a value of '" + entry.getValue() + "' is unused. It has been removed.");
+				}
 			}
 		}
 		Misc.saveJsonTo(this.data, this.root);
+	}
+
+	/**
+	 * Saves the current data locally async.
+	 *
+	 * @return the future if you would like to run any tasks after.
+	 */
+	public CompletableFuture<Void> saveAsync() {
+		return Misc.saveJsonTo(this.data, this.root);
 	}
 
 	/**

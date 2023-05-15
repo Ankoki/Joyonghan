@@ -1,4 +1,4 @@
-package com.ankoki.joyonghan.accounts;
+package com.ankoki.joyonghan.auth;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;

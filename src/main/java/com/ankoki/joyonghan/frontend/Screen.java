@@ -5,8 +5,13 @@ import java.util.ArrayList;
 
 public abstract class Screen extends ArrayList<JComponent> {
 
-	private JFrame parent;
+	private final JFrame parent;
 
+	/**
+	 * Creates a new screen with the given parent.
+	 *
+	 * @param parent the parent frame.
+	 */
 	public Screen(JFrame parent) {
 		this.parent = parent;
 	}

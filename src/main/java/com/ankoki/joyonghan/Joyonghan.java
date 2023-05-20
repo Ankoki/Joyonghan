@@ -61,15 +61,20 @@ public class Joyonghan {
 			Object obj = Joyonghan.instance.data.getData().get("current-account");
 			MainScreen screen = new MainScreen(instance.getFrontend());
 			if (obj != null) {
-				Map<String, Object> map = (Map<String, Object>) obj;
-				if (map.get("email") != null) {
-					Account account = Account.deserialize(map);
-					if (account != null && account.isValid())
-						Joyonghan.instance.getFrontend().showScreen(new HomeScreen(instance.getFrontend()));
-					else
-						Joyonghan.instance.getFrontend().showScreen(screen);
-				} else
+				if (!Misc.hasInternet())
 					Joyonghan.instance.getFrontend().showScreen(screen);
+				else {
+					Map<String, Object> map = (Map<String, Object>) obj;
+					if (map.get("email") != null) {
+						Account account = Account.deserialize(map);
+						if (account != null && account.isValid()) {
+							System.out.println("Account '" + account.getUsername() + "' is valid and able to log in.");
+							Joyonghan.instance.getFrontend().showScreen(new HomeScreen(instance.getFrontend()));
+						} else
+							Joyonghan.instance.getFrontend().showScreen(screen);
+					} else
+						Joyonghan.instance.getFrontend().showScreen(screen);
+				}
 			} else
 				Joyonghan.instance.getFrontend().showScreen(screen);
 			dialog.setVisible(false);

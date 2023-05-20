@@ -11,9 +11,17 @@ public enum AuthResult {
 	 */
 	EMAIL_IN_USE,
 	/**
+	 * The given email is not the correct format.
+	 */
+	INVALID_EMAIL,
+	/**
 	 * The given username is in use.
 	 */
 	USERNAME_IN_USE,
+	/**
+	 * The given username does not match the Joyonghan requirements.
+	 */
+	INVALID_USERNAME,
 	/**
 	 * Email/username was not found in the database.
 	 */

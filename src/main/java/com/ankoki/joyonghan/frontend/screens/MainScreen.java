@@ -32,11 +32,13 @@ public class MainScreen extends Screen {
 		JButton login = new JButton("LOGIN");
 		login.setBackground(new Color(75, 87, 78));
 		login.setBounds(625, 425, 175, 50);
+		login.setCursor(HAND_CURSOR);
 		login.addActionListener(event -> Joyonghan.getInstance().getFrontend().showScreen(new LoginScreen(this.getParent())));
 		// REGISTER BUTTON
 		JButton register = new JButton("REGISTER");
 		register.setBackground(new Color(75, 87, 78));
 		register.setBounds(625, 490, 175, 50);
+		register.setCursor(HAND_CURSOR);
 		register.addActionListener(event -> Joyonghan.getInstance().getFrontend().showScreen(new RegisterScreen(this.getParent())));
 		// LAST USED
 		Object last = Joyonghan.getInstance().getData().getData().get("last-used");

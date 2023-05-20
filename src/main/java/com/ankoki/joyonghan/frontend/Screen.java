@@ -1,9 +1,12 @@
 package com.ankoki.joyonghan.frontend;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
 public abstract class Screen extends ArrayList<JComponent> {
+
+	public static final Cursor HAND_CURSOR = new Cursor(Cursor.HAND_CURSOR), TEXT_CURSOR = new Cursor(Cursor.TEXT_CURSOR);
 
 	private final JFrame parent;
 

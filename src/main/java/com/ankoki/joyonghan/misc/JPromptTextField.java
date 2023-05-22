@@ -9,38 +9,15 @@ import java.awt.event.FocusEvent;
 public class JPromptTextField extends JTextField {
 
 	private final String prompt;
-	private boolean isWritten;
 
 	public JPromptTextField(String prompt) {
 		super(prompt);
 		this.prompt = prompt;
-		this.getDocument().addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				this.tick();
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				this.tick();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				this.tick();
-			}
-
-			public void tick() {
-				isWritten = !getText().equals(prompt);
-			}
-
-		});
 		this.addFocusListener(new FocusAdapter() {
 
 			@Override
 			public void focusGained(FocusEvent e) {
-				if (!isWritten)
+				if (isPrompt())
 					setText("");
 			}
 
@@ -57,6 +34,15 @@ public class JPromptTextField extends JTextField {
 	public String getText() {
 		String actual = super.getText();
 		return actual.equals(this.prompt) ? "" : super.getText();
+	}
+
+	/**
+	 * Checks if the current password is the prompt.
+	 *
+	 * @return the true if it is the prompt.
+	 */
+	private boolean isPrompt() {
+		return super.getText().equals(this.prompt);
 	}
 
 }

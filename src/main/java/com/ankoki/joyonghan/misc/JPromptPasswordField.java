@@ -33,6 +33,11 @@ public class JPromptPasswordField extends JPasswordField {
 		return isPrompt() ? new char[0] : super.getPassword();
 	}
 
+	/**
+	 * Checks if the current password is the prompt.
+	 *
+	 * @return the true if it is the prompt.
+	 */
 	private boolean isPrompt() {
 		char[] actual = super.getPassword();
 		boolean exact = true;

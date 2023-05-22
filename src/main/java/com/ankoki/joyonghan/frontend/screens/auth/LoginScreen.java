@@ -7,6 +7,8 @@ import com.ankoki.joyonghan.auth.AuthResult;
 import com.ankoki.joyonghan.frontend.Screen;
 import com.ankoki.joyonghan.frontend.screens.MainScreen;
 import com.ankoki.joyonghan.frontend.screens.home.HomeScreen;
+import com.ankoki.joyonghan.misc.JPromptPasswordField;
+import com.ankoki.joyonghan.misc.JPromptTextField;
 import com.ankoki.joyonghan.misc.Misc;
 import com.ankoki.sakura.Pair;
 
@@ -35,14 +37,14 @@ public class LoginScreen extends Screen {
 		box.setBounds(695, 158, 800, 300);
 		box.setForeground(new Color(43, 43, 43));
 		// EMAIL FIELD
-		JTextField email = new JTextField("EMAIL");
+		JTextField email = new JPromptTextField("EMAIL/USERNAME");
 		email.setHorizontalAlignment(JTextField.CENTER);
 		email.setForeground(new Color(255, 255, 255));
 		email.setBackground(new Color(75, 87, 78));
 		email.setCursor(TEXT_CURSOR);
 		email.setBounds(625, 400, 175, 50);
 		// PASSWORD FIELD
-		JPasswordField password = new JPasswordField("PASSWORD");
+		JPasswordField password = new JPromptPasswordField("PASSWORD");
 		password.setHorizontalAlignment(JTextField.CENTER);
 		password.setForeground(new Color(255, 255, 255));
 		password.setBackground(new Color(75, 87, 78));
@@ -59,10 +61,10 @@ public class LoginScreen extends Screen {
 		login.setBounds(640, 540, 150, 50);
 		login.setCursor(HAND_CURSOR);
 		login.addActionListener(event -> {
-			/*if (Misc.hasInternet()) {
+			if (!Misc.hasInternet()) {
 				error.setText("You are not connected to the internet. Please check you have a valid connection.");
 				return;
-			}*/
+			}
 			String input = email.getText();
 			char[] pass = password.getPassword();
 			Pair<Account, AuthResult> pair = AuthAssistant.attemptLogin(input, pass);

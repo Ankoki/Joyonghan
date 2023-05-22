@@ -7,7 +7,8 @@ import com.ankoki.joyonghan.auth.AuthResult;
 import com.ankoki.joyonghan.frontend.Screen;
 import com.ankoki.joyonghan.frontend.screens.MainScreen;
 import com.ankoki.joyonghan.frontend.screens.home.HomeScreen;
-import com.ankoki.joyonghan.misc.JTextFieldPlus;
+import com.ankoki.joyonghan.misc.JPromptPasswordField;
+import com.ankoki.joyonghan.misc.JPromptTextField;
 import com.ankoki.joyonghan.misc.Misc;
 import com.ankoki.sakura.Pair;
 
@@ -36,21 +37,21 @@ public class RegisterScreen extends Screen {
 		box.setBounds(695, 158, 800, 300);
 		box.setForeground(new Color(43, 43, 43));
 		// EMAIL FIELD
-		JTextFieldPlus email = new JTextFieldPlus("EMAIL");
+		JTextField email = new JPromptTextField("EMAIL");
 		email.setHorizontalAlignment(JTextField.CENTER);
 		email.setForeground(new Color(255, 255, 255));
 		email.setBackground(new Color(75, 87, 78));
 		email.setCursor(TEXT_CURSOR);
 		email.setBounds(625, 400, 175, 50);
 		// USERNAME FIELD
-		JTextFieldPlus username = new JTextFieldPlus("USERNAME");
+		JTextField username = new JPromptTextField("USERNAME");
 		username.setHorizontalAlignment(JTextField.CENTER);
 		username.setForeground(new Color(255, 255, 255));
 		username.setBackground(new Color(75, 87, 78));
 		username.setCursor(TEXT_CURSOR);
 		username.setBounds(625, 465, 175, 50);
-		// PASSWORD FIELD TODO verify password is atleast 8 characters
-		JPasswordField password = new JPasswordField("PASSWORD");
+		// PASSWORD FIELD
+		JPasswordField password = new JPromptPasswordField("PASSWORD");
 		password.setHorizontalAlignment(JTextField.CENTER);
 		password.setForeground(new Color(255, 255, 255));
 		password.setBackground(new Color(75, 87, 78));
@@ -60,17 +61,17 @@ public class RegisterScreen extends Screen {
 		JLabel error = new JLabel("", JLabel.CENTER);
 		error.setForeground(new Color(255, 255, 255));
 		error.setFont(new Font("Monospaced", Font.BOLD, 15));
-		error.setBounds(315, 665, 800, 50);
+		error.setBounds(215, 665, 1000, 50);
 		// LOGIN BUTTON
 		JButton register = new JButton("Register");
 		register.setBackground(new Color(75, 87, 78));
 		register.setBounds(640, 600, 150, 50);
 		register.setCursor(HAND_CURSOR);
 		register.addActionListener(event -> {
-			/*if (Misc.hasInternet()) {
+			if (!Misc.hasInternet()) {
 				error.setText("You are not connected to the internet. Please check you have a valid connection.");
 				return;
-			}*/
+			}
 			String mail = email.getText();
 			String user = username.getText();
 			char[] pass = password.getPassword();
@@ -82,6 +83,7 @@ public class RegisterScreen extends Screen {
 					case INVALID_EMAIL -> error.setText("The given email is invalid. Are you sure you typed it right?");
 					case USERNAME_IN_USE -> error.setText("The given username is already in use.");
 					case INVALID_USERNAME -> error.setText("The given username is not valid. Make sure to use 4-16 alphanumeric characters.");
+					case INVALID_PASSWORD -> error.setText("The password requires 8-20 characters which contain an uppercase character, lowercase character, and a digit.");
 					case FAILURE -> error.setText("There was an internal error. Do you have internet? Please try again.");
 				}
 			} else {

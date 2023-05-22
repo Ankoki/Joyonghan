@@ -6,8 +6,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
@@ -15,8 +15,9 @@ public class Misc {
 
 	private static final Pattern EMAIL_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern USERNAME_REGEX = Pattern.compile("^[A-Za-z]\\w{4,14}$");
+	private static final Pattern PASSWORD_REGEX = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$");
 
-	/** TODO FIX
+	/**
 	 * Checks if the current device is connected to the internet.
 	 *
 	 * @return true if connected.
@@ -24,10 +25,10 @@ public class Misc {
 	public static boolean hasInternet() {
 		try {
 			URL url = new URL("https://www.google.com");
-			URLConnection connection = url.openConnection();
-			connection.connect();
+			url.openConnection();
 			return true;
 		} catch (IOException ex) {
+			ex.printStackTrace();
 			return false;
 		}
 	}
@@ -50,6 +51,19 @@ public class Misc {
 	 */
 	public static boolean isValidUsername(String username) {
 		return USERNAME_REGEX.matcher(username).matches();
+	}
+
+	/**
+	 * Checks if the given password is valid.
+	 * Must be 8-20 characters.
+	 * Must contain 1 lowercase and 1 uppercase letter.
+	 * Must contain 1 number.
+	 *
+	 * @param password the string to test.
+	 * @return true if valid.
+	 */
+	public static boolean isValidPassword(char[] password) {
+		return PASSWORD_REGEX.matcher(new String(password)).matches();
 	}
 
 	/**
@@ -77,7 +91,5 @@ public class Misc {
 			}
 		});
 	}
-
-
 
 }

@@ -73,6 +73,8 @@ public class AuthAssistant {
 			return new Pair<>(null, AuthResult.INVALID_EMAIL);
 		if (!Misc.isValidUsername(username))
 			return new Pair<>(null, AuthResult.INVALID_USERNAME);
+		if (!Misc.isValidPassword(password))
+			return new Pair<>(null, AuthResult.INVALID_PASSWORD);
 		Database database = Joyonghan.getInstance().getDatabase();
 		try {
 			ResultSet set = database.executeQuery("SELECT * FROM Auth WHERE email = '" + email + "'");

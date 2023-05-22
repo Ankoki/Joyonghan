@@ -23,6 +23,10 @@ public enum AuthResult {
 	 */
 	INVALID_USERNAME,
 	/**
+	 * The given password doesn't meet the Joyonghan requirements.
+	 */
+	INVALID_PASSWORD,
+	/**
 	 * Email/username was not found in the database.
 	 */
 	EMAIL_NOT_FOUND,

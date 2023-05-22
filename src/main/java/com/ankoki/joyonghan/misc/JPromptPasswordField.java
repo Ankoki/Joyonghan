@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-// TODO FIX
 public class JPromptPasswordField extends JPasswordField {
 
 	private final char[] prompt;
@@ -16,7 +15,7 @@ public class JPromptPasswordField extends JPasswordField {
 
 			@Override
 			public void focusGained(FocusEvent e) {
-				if (!isPrompt())
+				if (isPrompt())
 					setText("");
 			}
 

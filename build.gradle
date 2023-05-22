@@ -3,6 +3,9 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
+build.dependsOn(shadowJar)
+jar.enabled = false
+
 group 'com.ankoki'
 version '1.0-SNAPSHOT'
 
@@ -21,4 +24,10 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+shadowJar {
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
+    manifest.attributes.put('Main-Class', 'com.ankoki.joyonghan.Joyonghan')
+    archiveName 'Joyonghan.jar'
 }

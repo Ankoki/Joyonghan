@@ -20,6 +20,8 @@ public class AuthAssistant {
 	 * @return a pair containing the account and the result. The account will be null unless successful.
 	 */
 	public static Pair<Account, AuthResult> attemptLogin(String email, char[] password) {
+		if (!Misc.hasInternet())
+			return new Pair<>(null, AuthResult.NO_INTERNET);
 		Database database = Joyonghan.getInstance().getDatabase();
 		try {
 			ResultSet set = database.executeQuery("SELECT * FROM Auth WHERE email=?;", email);
@@ -47,6 +49,8 @@ public class AuthAssistant {
 	 * @return true if valid.
 	 */
 	public static boolean attemptLogin(String email, String hash) {
+		if (!Misc.hasInternet())
+			return false;
 		Database database = Joyonghan.getInstance().getDatabase();
 		try {
 			ResultSet set = database.executeQuery("SELECT * FROM Auth WHERE email = '" + email + "'");
@@ -69,6 +73,8 @@ public class AuthAssistant {
 	 * @return a pair containing the account and the result. The account will be null unless successful.
 	 */
 	public static Pair<Account, AuthResult> attemptRegister(String email, String username, char[] password) {
+		if (!Misc.hasInternet())
+			return new Pair<>(null, AuthResult.NO_INTERNET);
 		if (!Misc.isValidEmail(email))
 			return new Pair<>(null, AuthResult.INVALID_EMAIL);
 		if (!Misc.isValidUsername(username))
@@ -78,9 +84,8 @@ public class AuthAssistant {
 		Database database = Joyonghan.getInstance().getDatabase();
 		try {
 			ResultSet set = database.executeQuery("SELECT * FROM Auth WHERE email = '" + email + "'");
-			if (set != null && set.isBeforeFirst()) {
+			if (set != null && set.isBeforeFirst())
 				return new Pair<>(null, AuthResult.EMAIL_IN_USE);
-			}
 			set = database.executeQuery("SELECT * FROM Auth WHERE username = '" + username + "'");
 			if (set != null && set.isBeforeFirst())
 				return new Pair<>(null, AuthResult.USERNAME_IN_USE);

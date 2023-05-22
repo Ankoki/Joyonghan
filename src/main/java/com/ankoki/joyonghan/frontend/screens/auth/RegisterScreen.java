@@ -84,7 +84,8 @@ public class RegisterScreen extends Screen {
 					case USERNAME_IN_USE -> error.setText("The given username is already in use.");
 					case INVALID_USERNAME -> error.setText("The given username is not valid. Make sure to use 4-16 alphanumeric characters.");
 					case INVALID_PASSWORD -> error.setText("The password requires 8-20 characters which contain an uppercase character, lowercase character, and a digit.");
-					case FAILURE -> error.setText("There was an internal error. Do you have internet? Please try again.");
+					case NO_INTERNET -> error.setText("There is no internet on this device currently. Check your connection.");
+					case FAILURE -> error.setText("There was an internal error. Please try again.");
 				}
 			} else {
 				Joyonghan.getInstance().setAccount(account);

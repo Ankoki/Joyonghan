@@ -35,6 +35,10 @@ public enum AuthResult {
 	 */
 	INCORRECT_PASSWORD,
 	/**
+	 * There is no internet on this device.
+	 */
+	NO_INTERNET,
+	/**
 	 * Only sent when there is an error.
 	 */
 	FAILURE;

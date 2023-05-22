@@ -77,6 +77,7 @@ public class LoginScreen extends Screen {
 				switch (result) {
 					case EMAIL_NOT_FOUND -> error.setText("The given email was not found! Did you mean to register?");
 					case INCORRECT_PASSWORD -> error.setText("The password was incorrect.");
+					case NO_INTERNET -> error.setText("You are not connection to the internet. Please check you have a valid connection.");
 					case FAILURE -> error.setText("There was an internal error. Do you have internet? Please try again.");
 				}
 			}

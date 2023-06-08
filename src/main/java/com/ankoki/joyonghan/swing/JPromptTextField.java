@@ -1,8 +1,6 @@
-package com.ankoki.joyonghan.misc;
+package com.ankoki.joyonghan.swing;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 

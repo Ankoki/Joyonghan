@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("UnusedReturnValue")
 public class AppData {
 
 	private static final String FOLDER_NAME = File.separator + "JOYONGHAN" + File.separator;
@@ -29,9 +30,9 @@ public class AppData {
 	 *
 	 * @param operatingSystem the operating system that the current device is running.
 	 *
-	 * @throws IOException
-	 * @throws IllegalAccessException
-	 * @throws MalformedJsonException
+	 * @throws IOException if an I/O error is thrown.
+	 * @throws IllegalAccessException if JSON was not found locally after initialising.
+	 * @throws MalformedJsonException if there is an issue with the JSON.
 	 */
 	public AppData(OperatingSystem operatingSystem) throws IOException, IllegalAccessException, MalformedJsonException {
 		if (operatingSystem == null)
@@ -90,14 +91,14 @@ public class AppData {
 	 * @return the data.
 	 */
 	@NotNull
-	public JSON getData() {
+	public JSON getPersistant() {
 		return this.data;
 	}
 
 	/**
 	 * Copies the default local data to the root path.
 	 *
-	 * @throws IOException
+	 * @throws IOException if an I/O error occurs during reading or writing.
 	 * @throws IllegalAccessException if the data.json was not found locally.
 	 */
 	private void copyDefaultData() throws IOException, IllegalAccessException {

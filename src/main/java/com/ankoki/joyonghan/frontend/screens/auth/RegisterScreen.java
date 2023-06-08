@@ -1,23 +1,20 @@
 package com.ankoki.joyonghan.frontend.screens.auth;
 
 import com.ankoki.joyonghan.Joyonghan;
-import com.ankoki.joyonghan.auth.Account;
-import com.ankoki.joyonghan.auth.AuthAssistant;
-import com.ankoki.joyonghan.auth.AuthResult;
-import com.ankoki.joyonghan.frontend.Screen;
 import com.ankoki.joyonghan.frontend.screens.MainScreen;
-import com.ankoki.joyonghan.frontend.screens.home.HomeScreen;
-import com.ankoki.joyonghan.misc.JPromptPasswordField;
-import com.ankoki.joyonghan.misc.JPromptTextField;
-import com.ankoki.joyonghan.misc.Misc;
-import com.ankoki.sakura.Pair;
+import com.ankoki.joyonghan.swing.ButtonStyle;
+import com.ankoki.joyonghan.swing.JPromptPasswordField;
+import com.ankoki.joyonghan.swing.JPromptTextField;
+import com.ankoki.joyonghan.swing.LazyFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 
-public class RegisterScreen extends Screen {
+public class RegisterScreen extends AuthScreen {
 
 	public RegisterScreen(JFrame parent) {
 		super(parent);
@@ -62,35 +59,42 @@ public class RegisterScreen extends Screen {
 		error.setForeground(new Color(255, 255, 255));
 		error.setFont(new Font("Monospaced", Font.BOLD, 15));
 		error.setBounds(215, 665, 1000, 50);
-		// LOGIN BUTTON
-		JButton register = new JButton("Register");
-		register.setBackground(new Color(75, 87, 78));
+		// REGISTER BUTTON
+		JButton register = LazyFactory.createAnimatedButton("Register", ButtonStyle.AUTH_SCREEN);
 		register.setBounds(640, 600, 150, 50);
-		register.setCursor(HAND_CURSOR);
 		register.addActionListener(event -> {
-			if (!Misc.hasInternet()) {
-				error.setText("You are not connected to the internet. Please check you have a valid connection.");
-				return;
+			super.attemptRegister(email.getText(), username.getText(), password.getPassword(), error);
+		});
+		email.addKeyListener(new KeyAdapter() {
+
+			@Override
+			public void keyPressed(KeyEvent event) {
+				if (event.getKeyCode() == KeyEvent.VK_ENTER)
+					RegisterScreen.this.attemptRegister(email.getText(), username.getText(), password.getPassword(), error);
+				else if (event.getKeyCode() == KeyEvent.VK_TAB)
+					username.requestFocus();
 			}
-			String mail = email.getText();
-			String user = username.getText();
-			char[] pass = password.getPassword();
-			Pair<Account, AuthResult> pair = AuthAssistant.attemptRegister(mail, user, pass);
-			Account account = pair.getFirst();
-			if (account == null) {
-				switch (pair.getSecond()) {
-					case EMAIL_IN_USE -> error.setText("The given email is already registered. Did you mean to log in?");
-					case INVALID_EMAIL -> error.setText("The given email is invalid. Are you sure you typed it right?");
-					case USERNAME_IN_USE -> error.setText("The given username is already in use.");
-					case INVALID_USERNAME -> error.setText("The given username is not valid. Make sure to use 4-16 alphanumeric characters.");
-					case INVALID_PASSWORD -> error.setText("The password requires 8-20 characters which contain an uppercase character, lowercase character, and a digit.");
-					case NO_INTERNET -> error.setText("There is no internet on this device currently. Check your connection.");
-					case FAILURE -> error.setText("There was an internal error. Please try again.");
-				}
-			} else {
-				Joyonghan.getInstance().setAccount(account);
-				Joyonghan.getInstance().getFrontend().showScreen(new HomeScreen(parent));
+
+		});
+		username.addKeyListener(new KeyAdapter() {
+
+			@Override
+			public void keyPressed(KeyEvent event) {
+				if (event.getKeyCode() == KeyEvent.VK_ENTER)
+					RegisterScreen.this.attemptRegister(email.getText(), username.getText(), password.getPassword(), error);
+				else if (event.getKeyCode() == KeyEvent.VK_TAB)
+					password.requestFocus();
 			}
+
+		});
+		password.addKeyListener(new KeyAdapter() {
+
+			@Override
+			public void keyPressed(KeyEvent event) {
+				if (event.getKeyCode() == KeyEvent.VK_ENTER)
+					RegisterScreen.this.attemptRegister(email.getText(), username.getText(), password.getPassword(), error);
+			}
+
 		});
 		// BACK BUTTON
 		JButton back = null;

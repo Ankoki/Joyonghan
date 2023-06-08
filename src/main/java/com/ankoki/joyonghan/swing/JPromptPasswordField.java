@@ -1,4 +1,4 @@
-package com.ankoki.joyonghan.misc;
+package com.ankoki.joyonghan.swing;
 
 import javax.swing.*;
 import java.awt.event.FocusAdapter;

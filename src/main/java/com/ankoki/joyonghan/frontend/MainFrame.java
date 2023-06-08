@@ -1,8 +1,8 @@
 package com.ankoki.joyonghan.frontend;
 
-import com.ankoki.joyonghan.Joyonghan;
 import com.ankoki.joyonghan.misc.Misc;
 import com.ankoki.joyonghan.misc.OperatingSystem;
+import com.ankoki.joyonghan.swing.LazyFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,13 +11,26 @@ import java.io.IOException;
 
 public class MainFrame extends JFrame {
 
+	private final static JPanel SIDEBAR = new JPanel();
+
+	static {
+		SIDEBAR.setBackground(new Color(98, 127, 104));
+		SIDEBAR.setLayout(null);
+		SIDEBAR.setBounds(0, 0, 325, 1000);
+		JButton account = LazyFactory.createAnimatedButton("Account");
+		JButton settings = LazyFactory.createAnimatedButton("Settings");
+		account.setBounds(30, 650, 250, 50);
+		settings.setBounds(30, 710, 250, 50);
+		SIDEBAR.add(account);
+		SIDEBAR.add(settings);
+	}
+
+	private Screen current = null;
+
 	/**
 	 * Creates the main frame that Joyonghan relies on.
 	 */
 	public MainFrame() {
-		System.setProperty("apple.awt.application.appearance", "NSAppearanceNameDarkAqua");
-		System.setProperty("Xdock:name", "JOYONGHAN");
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> Joyonghan.getInstance().shutdown()));
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
@@ -38,7 +51,18 @@ public class MainFrame extends JFrame {
 	 * @param screen the screen to show.
 	 */
 	public void showScreen(Screen screen) {
-		this.getContentPane().removeAll();
+		if (screen instanceof Sidebar) {
+			if (!(current instanceof Sidebar)) {
+				this.getContentPane().removeAll();
+				screen.add(SIDEBAR);
+			} else {
+				for (Component component : this.getContentPane().getComponents()) {
+					if (component != SIDEBAR)
+						this.getContentPane().remove(component);
+				}
+			}
+		} else
+			this.getContentPane().removeAll();
 		this.repaint();
 		for (JComponent component : screen)
 			this.getContentPane().add(component);

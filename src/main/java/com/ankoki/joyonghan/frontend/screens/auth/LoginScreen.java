@@ -1,23 +1,20 @@
 package com.ankoki.joyonghan.frontend.screens.auth;
 
 import com.ankoki.joyonghan.Joyonghan;
-import com.ankoki.joyonghan.auth.Account;
-import com.ankoki.joyonghan.auth.AuthAssistant;
-import com.ankoki.joyonghan.auth.AuthResult;
-import com.ankoki.joyonghan.frontend.Screen;
 import com.ankoki.joyonghan.frontend.screens.MainScreen;
-import com.ankoki.joyonghan.frontend.screens.home.HomeScreen;
-import com.ankoki.joyonghan.misc.JPromptPasswordField;
-import com.ankoki.joyonghan.misc.JPromptTextField;
-import com.ankoki.joyonghan.misc.Misc;
-import com.ankoki.sakura.Pair;
+import com.ankoki.joyonghan.swing.ButtonStyle;
+import com.ankoki.joyonghan.swing.JPromptPasswordField;
+import com.ankoki.joyonghan.swing.JPromptTextField;
+import com.ankoki.joyonghan.swing.LazyFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 
-public class LoginScreen extends Screen {
+public class LoginScreen extends AuthScreen {
 
 	public LoginScreen(JFrame parent) {
 		super(parent);
@@ -56,31 +53,28 @@ public class LoginScreen extends Screen {
 		error.setFont(new Font("Monospaced", Font.BOLD, 15));
 		error.setBounds(315, 600, 800, 50);
 		// LOGIN BUTTON
-		JButton login = new JButton("Login");
-		login.setBackground(new Color(75, 87, 78));
+		JButton login = LazyFactory.createAnimatedButton("Login", ButtonStyle.AUTH_SCREEN);
 		login.setBounds(640, 540, 150, 50);
-		login.setCursor(HAND_CURSOR);
-		login.addActionListener(event -> {
-			if (!Misc.hasInternet()) {
-				error.setText("You are not connected to the internet. Please check you have a valid connection.");
-				return;
+		login.addActionListener(event -> super.attemptLogin(email.getText(), password.getPassword(), error));
+		email.addKeyListener(new KeyAdapter() {
+
+			@Override
+			public void keyPressed(KeyEvent event) {
+				if (event.getKeyCode() == KeyEvent.VK_ENTER)
+					LoginScreen.this.attemptLogin(email.getText(), password.getPassword(), error);
+				else if (event.getKeyCode() == KeyEvent.VK_TAB)
+					password.requestFocus();
 			}
-			String input = email.getText();
-			char[] pass = password.getPassword();
-			Pair<Account, AuthResult> pair = AuthAssistant.attemptLogin(input, pass);
-			Account account = pair.getFirst();
-			if (account != null) {
-				Joyonghan.getInstance().setAccount(account);
-				Joyonghan.getInstance().getFrontend().showScreen(new HomeScreen(parent));
-			} else {
-				AuthResult result = pair.getSecond();
-				switch (result) {
-					case EMAIL_NOT_FOUND -> error.setText("The given email was not found! Did you mean to register?");
-					case INCORRECT_PASSWORD -> error.setText("The password was incorrect.");
-					case NO_INTERNET -> error.setText("You are not connection to the internet. Please check you have a valid connection.");
-					case FAILURE -> error.setText("There was an internal error. Do you have internet? Please try again.");
-				}
+
+		});
+		password.addKeyListener(new KeyAdapter() {
+
+			@Override
+			public void keyPressed(KeyEvent event) {
+				if (event.getKeyCode() == KeyEvent.VK_ENTER)
+					LoginScreen.this.attemptLogin(email.getText(), password.getPassword(), error);
 			}
+
 		});
 		// BACK BUTTON
 		JButton back = null;

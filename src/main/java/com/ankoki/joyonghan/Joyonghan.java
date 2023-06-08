@@ -36,32 +36,33 @@ public class Joyonghan {
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		System.out.println("Joyonghan is enabling.");
-		if (Misc.getOperatingSystem() == OperatingSystem.MAC)
+		if (Misc.getOperatingSystem() == OperatingSystem.MAC) {
 			System.setProperty("apple.awt.application.appearance", "system");
+			System.setProperty("Xdock:name", "JOYONGHAN");
+		}
 		JSONSerializable.register(Account.class);
 		try {
 			Joyonghan.instance = new Joyonghan(new AppData(Misc.getOperatingSystem()), new MainFrame());
+			Runtime.getRuntime().addShutdownHook(new Thread(() -> Joyonghan.getInstance().shutdown()));
 			Runnable destroyDialog = Joyonghan.instance.showLoadingScreen();
 			while (!Joyonghan.getInstance().data.isLoaded()) {}
-			Object obj = Joyonghan.instance.data.getData().get("current-account");
+			Object obj = Joyonghan.getInstance().data.getPersistant().get("current-account");
 			MainScreen screen = new MainScreen(instance.getFrontend());
+			if (!Misc.hasInternet())
+				Joyonghan.getInstance().getFrontend().showScreen(screen);
 			if (obj != null) {
-				if (!Misc.hasInternet())
-					Joyonghan.instance.getFrontend().showScreen(screen);
-				else {
-					Map<String, Object> map = (Map<String, Object>) obj;
-					if (map.get("email") != null) {
-						Account account = Account.deserialize(map);
-						if (account != null && account.isValid()) {
-							System.out.println("Account '" + account.getUsername() + "' is valid and able to log in.");
-							Joyonghan.instance.getFrontend().showScreen(new HomeScreen(instance.getFrontend()));
-						} else
-							Joyonghan.instance.getFrontend().showScreen(screen);
+				Map<String, Object> map = (Map<String, Object>) obj;
+				if (map.get("email") != null) {
+					Account account = Account.deserialize(map);
+					if (account != null && account.isValid()) {
+						System.out.println("Account '" + account.getUsername() + "' is valid and able to log in.");
+						Joyonghan.getInstance().getFrontend().showScreen(new HomeScreen(instance.getFrontend()));
 					} else
-						Joyonghan.instance.getFrontend().showScreen(screen);
-				}
+						Joyonghan.getInstance().getFrontend().showScreen(screen);
+				} else
+					Joyonghan.getInstance().getFrontend().showScreen(screen);
 			} else
-				Joyonghan.instance.getFrontend().showScreen(screen);
+				Joyonghan.getInstance().getFrontend().showScreen(screen);
 			destroyDialog.run();
 			System.out.printf("Joyonghan has been enabled in %sms.\n", System.currentTimeMillis() - start);
 		} catch (IOException | IllegalAccessException | MalformedJsonException ex) {
@@ -113,7 +114,7 @@ public class Joyonghan {
 	 */
 	public void setAccount(Account account) {
 		this.account = account;
-		this.data.getData().put("current-account", account);
+		this.data.getPersistant().put("current-account", account);
 	}
 
 	/**
@@ -160,7 +161,7 @@ public class Joyonghan {
 		try {
 			System.out.println("Shutting down Joyonghan.");
 			this.getDatabase().disconnect();
-			this.getData().getData().put("last-used", Joyonghan.DATE_FORMAT.format(new Date()));
+			this.getData().getPersistant().put("last-used", Joyonghan.DATE_FORMAT.format(new Date()));
 			this.getData().saveAsync();
 			Joyonghan.instance = null;
 			System.out.printf("Joyonghan shut down in %sms.\n", System.currentTimeMillis() - start);

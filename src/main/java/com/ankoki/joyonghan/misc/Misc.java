@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;

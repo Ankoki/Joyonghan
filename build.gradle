@@ -12,12 +12,14 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
     maven { url 'https://hat.lordoftherin.gs/releases' }
+    maven { url 'https://jitpack.io/' }
 }
 
 dependencies {
     implementation 'org.jetbrains:annotations:24.0.1'
-    implementation 'com.ankoki:Sakura:1.3'
+    implementation 'com.ankoki:Sakura:1.3.2'
     implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'com.github.thizzer:jtouchbar:92044c1d25'
     implementation files('TimingFramework.jar')
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
@@ -17,14 +18,17 @@ public class Misc {
 	private static final Pattern PASSWORD_REGEX = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$");
 
 	/**
+	 * TODO fix
 	 * Checks if the current device is connected to the internet.
 	 *
 	 * @return true if connected.
 	 */
 	public static boolean hasInternet() {
 		try {
-			URL url = new URL("https://www.google.com");
-			url.openConnection();
+			final URL url = new URL("http://www.google.com");
+			final URLConnection conn = url.openConnection();
+			conn.connect();
+			conn.getInputStream().close();
 			return true;
 		} catch (IOException ex) {
 			ex.printStackTrace();

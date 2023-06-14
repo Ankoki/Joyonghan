@@ -58,19 +58,21 @@ public class RegisterScreen extends AuthScreen {
 		JLabel error = new JLabel("", JLabel.CENTER);
 		error.setForeground(new Color(255, 255, 255));
 		error.setFont(new Font("Monospaced", Font.BOLD, 15));
-		error.setBounds(215, 665, 1000, 50);
+		error.setBounds(215, 700, 1000, 50);
+		// STAY LOGGED IN
+		JCheckBox stay = new JCheckBox("Stay Logged In");
+		stay.setForeground(new Color(255, 255, 255));
+		stay.setBounds(650, 575, 200, 50);
 		// REGISTER BUTTON
 		JButton register = LazyFactory.createAnimatedButton("Register", ButtonStyle.AUTH_SCREEN);
-		register.setBounds(640, 600, 150, 50);
-		register.addActionListener(event -> {
-			super.attemptRegister(email.getText(), username.getText(), password.getPassword(), error);
-		});
+		register.setBounds(640, 615, 150, 50);
+		register.addActionListener(event -> super.attemptRegister(email.getText(), username.getText(), password.getPassword(), error, stay.isSelected()));
 		email.addKeyListener(new KeyAdapter() {
 
 			@Override
 			public void keyPressed(KeyEvent event) {
 				if (event.getKeyCode() == KeyEvent.VK_ENTER)
-					RegisterScreen.this.attemptRegister(email.getText(), username.getText(), password.getPassword(), error);
+					RegisterScreen.this.attemptRegister(email.getText(), username.getText(), password.getPassword(), error, stay.isSelected());
 				else if (event.getKeyCode() == KeyEvent.VK_TAB)
 					username.requestFocus();
 			}
@@ -81,7 +83,7 @@ public class RegisterScreen extends AuthScreen {
 			@Override
 			public void keyPressed(KeyEvent event) {
 				if (event.getKeyCode() == KeyEvent.VK_ENTER)
-					RegisterScreen.this.attemptRegister(email.getText(), username.getText(), password.getPassword(), error);
+					RegisterScreen.this.attemptRegister(email.getText(), username.getText(), password.getPassword(), error, stay.isSelected());
 				else if (event.getKeyCode() == KeyEvent.VK_TAB)
 					password.requestFocus();
 			}
@@ -92,7 +94,7 @@ public class RegisterScreen extends AuthScreen {
 			@Override
 			public void keyPressed(KeyEvent event) {
 				if (event.getKeyCode() == KeyEvent.VK_ENTER)
-					RegisterScreen.this.attemptRegister(email.getText(), username.getText(), password.getPassword(), error);
+					RegisterScreen.this.attemptRegister(email.getText(), username.getText(), password.getPassword(), error, stay.isSelected());
 			}
 
 		});
@@ -120,6 +122,7 @@ public class RegisterScreen extends AuthScreen {
 		this.add(username);
 		this.add(password);
 		this.add(error);
+		this.add(stay);
 		this.add(register);
 		if (back != null)
 			this.add(back);

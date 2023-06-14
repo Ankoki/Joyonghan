@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -43,8 +44,8 @@ public class Joyonghan {
 		JSONSerializable.register(Account.class);
 		try {
 			Joyonghan.instance = new Joyonghan(new AppData(Misc.getOperatingSystem()), new MainFrame());
-			Runtime.getRuntime().addShutdownHook(new Thread(() -> Joyonghan.getInstance().shutdown()));
 			Runnable destroyDialog = Joyonghan.instance.showLoadingScreen();
+			Runtime.getRuntime().addShutdownHook(new Thread(() -> Joyonghan.getInstance().shutdown()));
 			while (!Joyonghan.getInstance().data.isLoaded()) {}
 			Object obj = Joyonghan.getInstance().data.getPersistant().get("current-account");
 			MainScreen screen = new MainScreen(instance.getFrontend());
@@ -112,9 +113,18 @@ public class Joyonghan {
 	 *
 	 * @param account the new account.
 	 */
-	public void setAccount(Account account) {
+	public void setAccount(Account account, boolean persistent) {
 		this.account = account;
-		this.data.getPersistant().put("current-account", account);
+		if (account != null && persistent)
+			this.data.getPersistant().put("current-account", account);
+		else {
+			Map<String, Object> empty = new LinkedHashMap<>();
+			empty.put("username", null);
+			empty.put("uuid", null);
+			empty.put("email", null);
+			empty.put("password-hash", null);
+			this.data.getPersistant().put("current-account", empty);
+		}
 	}
 
 	/**
@@ -162,7 +172,7 @@ public class Joyonghan {
 			System.out.println("Shutting down Joyonghan.");
 			this.getDatabase().disconnect();
 			this.getData().getPersistant().put("last-used", Joyonghan.DATE_FORMAT.format(new Date()));
-			this.getData().saveAsync();
+			this.getData().saveSync();
 			Joyonghan.instance = null;
 			System.out.printf("Joyonghan shut down in %sms.\n", System.currentTimeMillis() - start);
 		} catch (SQLException ex) {

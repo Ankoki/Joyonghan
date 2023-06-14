@@ -17,12 +17,12 @@ public class Account extends JSONSerializable {
 	 */
 	@Nullable
 	public static Account deserialize(Map<String, Object> map) {
-		if (map.isEmpty())
+		if (map.isEmpty() || map.get("username") != null)
 			return null;
 		String username = (String) map.get("username");
-		UUID uuid = (UUID) map.get("uuid");
+		UUID uuid = UUID.fromString(String.valueOf(map.get("uuid")));
 		String email = (String) map.get("email");
-		String passwordHash = (String) map.get("passwordHash");
+		String passwordHash = (String) map.get("password-hash");
 		return new Account(username, uuid, email, passwordHash);
 	}
 

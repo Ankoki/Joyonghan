@@ -149,6 +149,17 @@ public class AppData {
 	}
 
 	/**
+	 * Saves the current data locally sync.
+	 */
+	public void saveSync() {
+		try (FileWriter writer = new FileWriter(this.root)) {
+			writer.write(this.data.toPrettyString());
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	/**
 	 * Parses the stored file into cache.
 	 */
 	private CompletableFuture<Void> parseDataFromRoot() {

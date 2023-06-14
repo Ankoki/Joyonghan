@@ -51,17 +51,21 @@ public class LoginScreen extends AuthScreen {
 		JLabel error = new JLabel("", JLabel.CENTER);
 		error.setForeground(new Color(255, 255, 255));
 		error.setFont(new Font("Monospaced", Font.BOLD, 15));
-		error.setBounds(315, 600, 800, 50);
+		error.setBounds(315, 625, 800, 50);
+		// STAY LOGGED IN
+		JCheckBox stay = new JCheckBox("Stay Logged In");
+		stay.setForeground(new Color(255, 255, 255));
+		stay.setBounds(650, 510, 200, 50);
 		// LOGIN BUTTON
 		JButton login = LazyFactory.createAnimatedButton("Login", ButtonStyle.AUTH_SCREEN);
-		login.setBounds(640, 540, 150, 50);
-		login.addActionListener(event -> super.attemptLogin(email.getText(), password.getPassword(), error));
+		login.setBounds(640, 565, 150, 50);
+		login.addActionListener(event -> super.attemptLogin(email.getText(), password.getPassword(), error, stay.isSelected()));
 		email.addKeyListener(new KeyAdapter() {
 
 			@Override
 			public void keyPressed(KeyEvent event) {
 				if (event.getKeyCode() == KeyEvent.VK_ENTER)
-					LoginScreen.this.attemptLogin(email.getText(), password.getPassword(), error);
+					LoginScreen.this.attemptLogin(email.getText(), password.getPassword(), error, stay.isSelected());
 				else if (event.getKeyCode() == KeyEvent.VK_TAB)
 					password.requestFocus();
 			}
@@ -72,7 +76,7 @@ public class LoginScreen extends AuthScreen {
 			@Override
 			public void keyPressed(KeyEvent event) {
 				if (event.getKeyCode() == KeyEvent.VK_ENTER)
-					LoginScreen.this.attemptLogin(email.getText(), password.getPassword(), error);
+					LoginScreen.this.attemptLogin(email.getText(), password.getPassword(), error, stay.isSelected());
 			}
 
 		});
@@ -99,6 +103,7 @@ public class LoginScreen extends AuthScreen {
 		this.add(email);
 		this.add(password);
 		this.add(error);
+		this.add(stay);
 		this.add(login);
 		this.add(back);
 	}

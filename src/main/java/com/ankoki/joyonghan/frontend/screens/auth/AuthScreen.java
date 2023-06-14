@@ -28,8 +28,9 @@ public abstract class AuthScreen extends Screen {
 	 * @param email the email.
 	 * @param pass the password.
 	 * @param error the error label.
+	 * @param persistent whether to stay logged in over restart.
 	 */
-	protected void attemptLogin(String email, char[] pass, JLabel error) {
+	protected void attemptLogin(String email, char[] pass, JLabel error, boolean persistent) {
 		if (!Misc.hasInternet()) {
 			error.setText("You are not connected to the internet. Please check you have a valid connection.");
 			return;
@@ -37,7 +38,7 @@ public abstract class AuthScreen extends Screen {
 		Pair<Account, AuthResult> pair = AuthAssistant.attemptLogin(email, pass);
 		Account account = pair.getFirst();
 		if (account != null) {
-			Joyonghan.getInstance().setAccount(account);
+			Joyonghan.getInstance().setAccount(account, persistent);
 			Joyonghan.getInstance().getFrontend().showScreen(new HomeScreen(this.getParent()));
 		} else {
 			AuthResult result = pair.getSecond();
@@ -57,8 +58,9 @@ public abstract class AuthScreen extends Screen {
 	 * @param user the username.
 	 * @param pass the password.
 	 * @param error the error label.
+	 * @param persistent whether to stay logged in over restart or not.
 	 */
-	protected void attemptRegister(String email, String user, char[] pass, JLabel error) {
+	protected void attemptRegister(String email, String user, char[] pass, JLabel error, boolean persistent) {
 		if (!Misc.hasInternet()) {
 			error.setText("You are not connected to the internet. Please check you have a valid connection.");
 			return;
@@ -76,8 +78,9 @@ public abstract class AuthScreen extends Screen {
 				case FAILURE -> error.setText("There was an internal error. Please try again.");
 			}
 		} else {
-			Joyonghan.getInstance().setAccount(account);
+			Joyonghan.getInstance().setAccount(account, persistent);
 			Joyonghan.getInstance().getFrontend().showScreen(new HomeScreen(this.getParent()));
+			Joyonghan.getInstance().getData().getPersistant().put("stay-logged-in", persistent);
 		}
 	}
 

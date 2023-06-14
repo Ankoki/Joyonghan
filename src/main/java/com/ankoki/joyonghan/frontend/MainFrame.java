@@ -1,5 +1,7 @@
 package com.ankoki.joyonghan.frontend;
 
+import com.ankoki.joyonghan.auth.AuthAssistant;
+import com.ankoki.joyonghan.misc.MacUtils;
 import com.ankoki.joyonghan.misc.Misc;
 import com.ankoki.joyonghan.misc.OperatingSystem;
 import com.ankoki.joyonghan.swing.LazyFactory;
@@ -21,6 +23,7 @@ public class MainFrame extends JFrame {
 		JButton settings = LazyFactory.createAnimatedButton("Settings");
 		account.setBounds(30, 650, 250, 50);
 		settings.setBounds(30, 710, 250, 50);
+		account.addActionListener(e -> AuthAssistant.logOut());
 		SIDEBAR.add(account);
 		SIDEBAR.add(settings);
 	}
@@ -67,7 +70,10 @@ public class MainFrame extends JFrame {
 		for (JComponent component : screen)
 			this.getContentPane().add(component);
 		this.revalidate();
+		if (Misc.getOperatingSystem() == OperatingSystem.MAC)
+			MacUtils.showTouchbar(screen);
 		this.setVisible(true);
+		this.current = screen;
 		System.out.println("The screen '" + screen.getClass().getSimpleName() + "' has been shown.");
 	}
 

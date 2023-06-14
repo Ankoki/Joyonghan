@@ -2,6 +2,7 @@ package com.ankoki.joyonghan.auth;
 
 import com.ankoki.joyonghan.Joyonghan;
 import com.ankoki.joyonghan.database.Database;
+import com.ankoki.joyonghan.frontend.screens.MainScreen;
 import com.ankoki.joyonghan.misc.Misc;
 import com.ankoki.sakura.Pair;
 
@@ -96,12 +97,19 @@ public class AuthAssistant {
 			String hash = Joyonghan.getInstance().getHasher().hash(password);
 			Account account = new Account(username, uuid, email, hash);
 			database.executeUpdate("INSERT INTO Auth(email,uuid,username,password) VALUES(?,?,?,?)", email, uuid.toString(), username, hash);
-			Joyonghan.getInstance().setAccount(account);
 			return new Pair<>(account, AuthResult.SUCCESS);
 		} catch (GeneralSecurityException | SQLException ex) {
 			ex.printStackTrace();
 		}
 		return new Pair<>(null, AuthResult.FAILURE);
+	}
+
+	/**
+	 * Logs out of the current account and shows the home screen.
+	 */
+	public static void logOut() {
+		Joyonghan.getInstance().setAccount(null, true);
+		Joyonghan.getInstance().getFrontend().showScreen(new MainScreen(Joyonghan.getInstance().getFrontend()));
 	}
 
 }

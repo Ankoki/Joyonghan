@@ -8,6 +8,12 @@ public class JPromptPasswordField extends JPasswordField {
 
 	private final char[] prompt;
 
+	/**
+	 * Creates a new password field with the given prompt to show.
+	 * TODO change this to show actual text instead of hidden password characters.
+	 *
+	 * @param prompt the prompt.
+	 */
 	public JPromptPasswordField(String prompt) {
 		super(prompt);
 		this.prompt = prompt.toCharArray();

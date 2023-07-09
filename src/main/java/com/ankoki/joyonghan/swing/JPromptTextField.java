@@ -8,6 +8,11 @@ public class JPromptTextField extends JTextField {
 
 	private final String prompt;
 
+	/**
+	 * Creates a new text field with the given prompt.
+	 *
+	 * @param prompt the prompt to show.
+	 */
 	public JPromptTextField(String prompt) {
 		super(prompt);
 		this.prompt = prompt;

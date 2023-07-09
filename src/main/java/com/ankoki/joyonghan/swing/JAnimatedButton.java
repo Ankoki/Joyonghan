@@ -12,6 +12,7 @@ import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
+// TODO comment this class.
 @SuppressWarnings("unused")
 public class JAnimatedButton extends JButton {
 

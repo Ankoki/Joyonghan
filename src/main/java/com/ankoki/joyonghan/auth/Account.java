@@ -10,12 +10,13 @@ import java.util.UUID;
 public class Account extends JSONSerializable {
 
 	/**
-	 * Deserializes an account stored locally.
+	 * Required method by Sakura. Used to deserialize a payment calculator object.
 	 *
-	 * @param map the map to deserialize.
-	 * @return the current object.
+	 * @param map the serialized object.
+	 * @return the deserialized object.
 	 */
 	@Nullable
+	@SuppressWarnings("unused") // Sakura uses reflection to access this method, it will appear unused.
 	public static Account deserialize(Map<String, Object> map) {
 		if (map.isEmpty() || map.get("username") != null)
 			return null;

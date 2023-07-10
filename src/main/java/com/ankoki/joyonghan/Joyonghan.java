@@ -8,6 +8,7 @@ import com.ankoki.joyonghan.frontend.screens.MainScreen;
 import com.ankoki.joyonghan.frontend.screens.home.HomeScreen;
 import com.ankoki.joyonghan.misc.Misc;
 import com.ankoki.joyonghan.misc.OperatingSystem;
+import com.ankoki.joyonghan.misc.PaymentCalculator;
 import com.ankoki.sakura.JSON.MalformedJsonException;
 import com.ankoki.sakura.JSONSerializable;
 
@@ -15,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,6 +44,7 @@ public class Joyonghan {
 			System.setProperty("Xdock:name", "JOYONGHAN");
 		}
 		JSONSerializable.register(Account.class);
+		JSONSerializable.register(PaymentCalculator.class);
 		try {
 			Joyonghan.instance = new Joyonghan(new AppData(Misc.getOperatingSystem()), new MainFrame());
 			Runnable destroyDialog = Joyonghan.instance.showLoadingScreen();
@@ -191,7 +194,10 @@ public class Joyonghan {
 		dialog.setModal(false);
 		dialog.setUndecorated(true);
 		dialog.setLayout(new BorderLayout());
-		Image image = ImageIO.read(Joyonghan.class.getResourceAsStream("/icon.png"));
+		InputStream stream = Joyonghan.class.getResourceAsStream("/icon.png");
+		if (stream == null)
+			throw new IllegalAccessError("There was an issue reading the resource /icon.png.");
+		Image image = ImageIO.read(stream);
 		image = image.getScaledInstance(500, 500, Image.SCALE_DEFAULT);
 		JLabel splash = new JLabel(new ImageIcon(image));
 		splash.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));

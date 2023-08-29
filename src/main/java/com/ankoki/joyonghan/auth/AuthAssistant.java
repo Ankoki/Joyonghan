@@ -4,6 +4,7 @@ import com.ankoki.joyonghan.Joyonghan;
 import com.ankoki.joyonghan.database.Database;
 import com.ankoki.joyonghan.frontend.screens.MainScreen;
 import com.ankoki.joyonghan.misc.Misc;
+import com.ankoki.sakura.JSON;
 import com.ankoki.sakura.Pair;
 
 import java.security.GeneralSecurityException;
@@ -33,7 +34,8 @@ public class AuthAssistant {
 				return new Pair<>(null, AuthResult.INCORRECT_PASSWORD);
 			String username = set.getNString("username");
 			UUID uuid = UUID.fromString(set.getNString("uuid"));
-			Account account = new Account(username, uuid, email, passwordHash);
+			String data = set.getNString("data");
+			Account account = new Account(username, uuid, email, passwordHash, new JSON(data));
 			System.out.println("Successfully logged in as '" + username + "'.");
 			return new Pair<>(account, AuthResult.SUCCESS);
 		} catch (SQLException | GeneralSecurityException ex) {
@@ -95,7 +97,7 @@ public class AuthAssistant {
 				set = database.executeQuery("SELECT * FROM Auth WHERE uuid = '" + uuid + "'");
 			} while (set != null && set.isBeforeFirst());
 			String hash = Joyonghan.getInstance().getHasher().hash(password);
-			Account account = new Account(username, uuid, email, hash);
+			Account account = new Account(username, uuid, email, hash, null);
 			database.executeUpdate("INSERT INTO Auth(email,uuid,username,password) VALUES(?,?,?,?)", email, uuid.toString(), username, hash);
 			return new Pair<>(account, AuthResult.SUCCESS);
 		} catch (GeneralSecurityException | SQLException ex) {

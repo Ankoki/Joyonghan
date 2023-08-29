@@ -10,6 +10,7 @@ import com.ankoki.joyonghan.misc.Misc;
 import com.ankoki.sakura.Pair;
 
 import javax.swing.*;
+import java.util.UUID;
 
 public abstract class AuthScreen extends Screen {
 
@@ -35,6 +36,10 @@ public abstract class AuthScreen extends Screen {
 			error.setText("You are not connected to the internet. Please check you have a valid connection.");
 			return;
 		}
+		// WHILE MY DATABASE IS DOWN, AUTOMATICALLY AUTHENTICATE WITH A FALSE PERSISTENCE.
+		Joyonghan.getInstance().setAccount(new Account("temporary-tester", UUID.randomUUID(), "joyonghan-test@ankoki.com", "N/A", null), false);
+		Joyonghan.getInstance().getFrontend().showScreen(new HomeScreen(this.getParent()));
+		/*
 		Pair<Account, AuthResult> pair = AuthAssistant.attemptLogin(email, pass);
 		Account account = pair.getFirst();
 		if (account != null) {
@@ -48,7 +53,7 @@ public abstract class AuthScreen extends Screen {
 				case NO_INTERNET -> error.setText("You are not connection to the internet. Please check you have a valid connection.");
 				case FAILURE -> error.setText("There was an internal error. Do you have internet? Please try again.");
 			}
-		}
+		}*/
 	}
 
 	/**

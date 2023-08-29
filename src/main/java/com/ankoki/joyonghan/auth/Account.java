@@ -1,5 +1,6 @@
 package com.ankoki.joyonghan.auth;
 
+import com.ankoki.sakura.JSON;
 import com.ankoki.sakura.JSONSerializable;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +25,8 @@ public class Account extends JSONSerializable {
 		UUID uuid = UUID.fromString(String.valueOf(map.get("uuid")));
 		String email = (String) map.get("email");
 		String passwordHash = (String) map.get("password-hash");
-		return new Account(username, uuid, email, passwordHash);
+		JSON data = new JSON((String) map.get("data"));
+		return new Account(username, uuid, email, passwordHash, data);
 	}
 
 	private final String username;
@@ -32,12 +34,14 @@ public class Account extends JSONSerializable {
 	private final String email;
 	// We store the hash locally in the data.json to keep people logged in over restart, incase passwords have been changed.
 	private final String passwordHash;
+	private final JSON data;
 
-	public Account(String username, UUID uuid, String email, String passwordHash) {
+	public Account(String username, UUID uuid, String email, String passwordHash, JSON data) {
 		this.username = username;
 		this.uuid = uuid;
 		this.email = email;
 		this.passwordHash = passwordHash;
+		this.data = data == null ? new JSON() : data;
 	}
 
 	/**
@@ -68,6 +72,15 @@ public class Account extends JSONSerializable {
 	}
 
 	/**
+	 * Gets the raw data from JSON.
+	 *
+	 * @return the persistent data of this user.
+	 */
+	public JSON getData() {
+		return data;
+	}
+
+	/**
 	 * Checks if the current information is still valid.
 	 *
 	 * @return true if valid.
@@ -83,6 +96,7 @@ public class Account extends JSONSerializable {
 		map.put("uuid", uuid);
 		map.put("email", email);
 		map.put("password-hash", passwordHash);
+		map.put("data", data);
 		return map;
 	}
 
